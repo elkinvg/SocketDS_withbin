@@ -56,18 +56,19 @@ static const char *RcsId = "$Id:  $";
 //  The following table gives the correspondence
 //  between command and method names.
 //
-//  Command name     |  Method name
+//  Command name       |  Method name
 //================================================================
-//  State            |  Inherited (no method)
-//  Status           |  Inherited (no method)
-//  Write            |  write
-//  Read             |  read
-//  Reconnect        |  reconnect
-//  WriteAndRead     |  write_and_read
-//  Readln           |  readln
-//  ReadUntil        |  read_until
-//  WriteReadUntil   |  write_read_until
-//  CheckConnection  |  check_connection
+//  State              |  Inherited (no method)
+//  Status             |  Inherited (no method)
+//  Write              |  write
+//  Read               |  read
+//  Reconnect          |  reconnect
+//  WriteAndRead       |  write_and_read
+//  Readln             |  readln
+//  ReadUntil          |  read_until
+//  WriteReadUntil     |  write_read_until
+//  CheckConnection    |  check_connection
+//  WriteAndReadNChar  |  write_and_read_nchar
 //================================================================
 
 //================================================================
@@ -561,10 +562,39 @@ void SocketDS::check_connection()
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::check_connection
 }
+//--------------------------------------------------------
+/**
+ *	Command WriteAndReadNChar related method
+ *	Description: Write command and read reply
+ *
+ *	@param argin [0] - command
+ *               [1] - Number of characters in reply
+ *	@returns Reply String
+ */
+//--------------------------------------------------------
+Tango::DevString SocketDS::write_and_read_nchar(const Tango::DevVarStringArray *argin)
+{
+	Tango::DevString argout;
+	DEBUG_STREAM << "SocketDS::WriteAndReadNChar()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::write_and_read_nchar) ENABLED START -----*/
+	
+	//	Add your own code
+	int nChar;
+	stringstream command, nCharStr;
+	command << (*argin)[0];
+	nCharStr << (*argin)[1];
+	write(Tango::string_dup(command.str().c_str()));
+	if (!(nCharStr >> nChar)) nChar = 0;
+	
+	//argout = read_until(Tango::string_dup(until.str().c_str()));
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read_nchar
+	return argout;
+}
 
 /*----- PROTECTED REGION ID(SocketDS::namespace_ending) ENABLED START -----*/
 
 //	Additional Methods
+
 void SocketDS::check_deadline()
 {
 	if (timer->expires_at() <= boost::asio::deadline_timer::traits_type::now())
@@ -584,6 +614,34 @@ void SocketDS::check_deadline()
 
 	// Put the actor back to sleep.
 	timer->async_wait(bind(&SocketDS::check_deadline, this));
+}
+
+void SocketDS::socket_read_nchar(int nChar)
+{
+	std::string buf;
+	// Set a deadline for the asynchronous operation. Since this function uses
+	// a composed operation (async_read_until), the deadline applies to the
+	// entire operation, rather than individual reads from the socket.
+	timer->expires_from_now(boost::posix_time::milliseconds(readtimeout));
+
+	// Set up the variable that receives the result of the asynchronous
+	// operation. The error code is set to would_block to signal that the
+	// operation is incomplete. Asio guarantees that its asynchronous
+	// operations will never fail with would_block, so any other value in
+	// ec indicates completion.
+	boost::system::error_code ec = boost::asio::error::would_block;
+
+	// Start the asynchronous operation itself. The boost::lambda function
+	// object is used as a callback and will update the ec variable when the
+	// operation completes. The blocking_udp_client.cpp example shows how you
+	// can use boost::bind rather than boost::lambda.
+	boost::asio::async_read(*socket, boost::asio::buffer(buf,nChar), boost::lambda::var(ec) = boost::lambda::_1);
+
+	// Block until the asynchronous operation has completed.
+	do io_service->run_one(); while (ec == boost::asio::error::would_block);
+
+	if (ec)
+		throw boost::system::system_error(ec);
 }
 
 void SocketDS::socket_read()
@@ -641,6 +699,7 @@ void SocketDS::socket_write(std::string message)
     if (ec)
       throw boost::system::system_error(ec);
 }
+
 
 /*----- PROTECTED REGION END -----*/	//	SocketDS::namespace_ending
 } //	namespace

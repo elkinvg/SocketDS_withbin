@@ -305,6 +305,25 @@ CORBA::Any *CheckConnectionClass::execute(Tango::DeviceImpl *device, TANGO_UNUSE
 	return new CORBA::Any();
 }
 
+//--------------------------------------------------------
+/**
+ * method : 		WriteAndReadNCharClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *WriteAndReadNCharClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	cout2 << "WriteAndReadNCharClass::execute(): arrived" << endl;
+	const Tango::DevVarStringArray *argin;
+	extract(in_any, argin);
+	return insert((static_cast<SocketDS *>(device))->write_and_read_nchar(argin));
+}
+
 
 //===================================================================
 //	Properties management
@@ -726,6 +745,15 @@ void SocketDSClass::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pCheckConnectionCmd);
+
+	//	Command WriteAndReadNChar
+	WriteAndReadNCharClass	*pWriteAndReadNCharCmd =
+		new WriteAndReadNCharClass("WriteAndReadNChar",
+			Tango::DEVVAR_STRINGARRAY, Tango::DEV_STRING,
+			"[0] - command\n[1] - Number of characters in reply",
+			"Reply String",
+			Tango::OPERATOR);
+	command_list.push_back(pWriteAndReadNCharCmd);
 
 	/*----- PROTECTED REGION ID(SocketDSClass::command_factory_after) ENABLED START -----*/
 	

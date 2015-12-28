@@ -204,4 +204,19 @@ bool SocketDS::is_CheckConnection_allowed(TANGO_UNUSED(const CORBA::Any &any))
 	return true;
 }
 
+//--------------------------------------------------------
+/**
+ *	Method      : SocketDS::is_WriteAndReadNChar_allowed()
+ *	Description : Execution allowed for WriteAndReadNChar attribute
+ */
+//--------------------------------------------------------
+bool SocketDS::is_WriteAndReadNChar_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for WriteAndReadNChar command.
+	/*----- PROTECTED REGION ID(SocketDS::WriteAndReadNCharStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteAndReadNCharStateAllowed
+	return true;
+}
+
 }	//	End of namespace

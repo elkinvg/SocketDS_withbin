@@ -238,6 +238,16 @@ public:
 	 */
 	virtual void check_connection();
 	virtual bool is_CheckConnection_allowed(const CORBA::Any &any);
+	/**
+	 *	Command WriteAndReadNChar related method
+	 *	Description: Write command and read reply
+	 *
+	 *	@param argin [0] - command
+	 *               [1] - Number of characters in reply
+	 *	@returns Reply String
+	 */
+	virtual Tango::DevString write_and_read_nchar(const Tango::DevVarStringArray *argin);
+	virtual bool is_WriteAndReadNChar_allowed(const CORBA::Any &any);
 
 
 /*----- PROTECTED REGION ID(SocketDS::Additional Method prototypes) ENABLED START -----*/
@@ -246,6 +256,8 @@ public:
 	 void check_deadline();
 	 void socket_read();
 	 void socket_write(std::string message);
+	 //elkin
+	 void socket_read_nchar(int nChar);
 	
 /*----- PROTECTED REGION END -----*/	//	SocketDS::Additional Method prototypes
 };
