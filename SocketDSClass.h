@@ -266,6 +266,29 @@ public:
 	{return (static_cast<SocketDS *>(dev))->is_WriteAndReadNChar_allowed(any);}
 };
 
+//	Command ReadNChar class definition
+class ReadNCharClass : public Tango::Command
+{
+public:
+	ReadNCharClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	ReadNCharClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~ReadNCharClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<SocketDS *>(dev))->is_ReadNChar_allowed(any);}
+};
+
 
 /**
  *	The SocketDSClass singleton definition

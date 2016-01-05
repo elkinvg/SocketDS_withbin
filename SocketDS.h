@@ -50,6 +50,8 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <boost/array.hpp>
+
 
 
 /*----- PROTECTED REGION END -----*/	//	SocketDS.h
@@ -248,6 +250,14 @@ public:
 	 */
 	virtual Tango::DevString write_and_read_nchar(const Tango::DevVarStringArray *argin);
 	virtual bool is_WriteAndReadNChar_allowed(const CORBA::Any &any);
+	/**
+	 *	Command ReadNChar related method
+	 *	Description: Command used to read a string from the socket.
+	 *
+	 *	@returns 
+	 */
+	virtual Tango::DevString read_nchar();
+	virtual bool is_ReadNChar_allowed(const CORBA::Any &any);
 
 
 /*----- PROTECTED REGION ID(SocketDS::Additional Method prototypes) ENABLED START -----*/
@@ -257,7 +267,12 @@ public:
 	 void socket_read();
 	 void socket_write(std::string message);
 	 //elkin
+	 std::string data_;
+	 boost::array<char, 512> buff;
 	 void socket_read_nchar(int nChar);
+	 void on_read(
+		 const boost::system::error_code& error,
+		 std::size_t bytes_transferred);
 	
 /*----- PROTECTED REGION END -----*/	//	SocketDS::Additional Method prototypes
 };

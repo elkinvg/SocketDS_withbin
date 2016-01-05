@@ -45,6 +45,7 @@ static const char *RcsId = "$Id:  $";
 #include <sstream>
 #include <locale.h>
 
+
 /*----- PROTECTED REGION END -----*/	//	SocketDS.cpp
 
 /**
@@ -69,6 +70,7 @@ static const char *RcsId = "$Id:  $";
 //  WriteReadUntil     |  write_read_until
 //  CheckConnection    |  check_connection
 //  WriteAndReadNChar  |  write_and_read_nchar
+//  ReadNChar          |  read_nchar
 //================================================================
 
 //================================================================
@@ -182,6 +184,8 @@ void SocketDS::init_device()
 		set_state(Tango::ON);
 		set_status("Connected!");
 		DEBUG_STREAM << "Success!"<< endl;
+		//elkin
+		data_.resize(10);
 	}
 	catch(std::exception& e)
 	{
@@ -385,8 +389,10 @@ Tango::DevString SocketDS::read()
 
 	try
 	{
+		DEBUG_STREAM << "point before read" << endl;
 		socket_read();
 		result << buffer;
+		DEBUG_STREAM << "point after read" << endl;
 	}
 	catch (std::exception& e)
 	{
@@ -439,6 +445,7 @@ Tango::DevString SocketDS::write_and_read(Tango::DevString argin)
 	
 	write(argin);
 	argout = read();
+	DEBUG_STREAM << "point after WR!!!!" << endl;
 		
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read
 	return argout;
@@ -585,9 +592,55 @@ Tango::DevString SocketDS::write_and_read_nchar(const Tango::DevVarStringArray *
 	nCharStr << (*argin)[1];
 	write(Tango::string_dup(command.str().c_str()));
 	if (!(nCharStr >> nChar)) nChar = 0;
+	argout = read_nchar();
 	
 	//argout = read_until(Tango::string_dup(until.str().c_str()));
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read_nchar
+	return argout;
+}
+//--------------------------------------------------------
+/**
+ *	Command ReadNChar related method
+ *	Description: Command used to read a string from the socket.
+ *
+ *	@returns 
+ */
+//--------------------------------------------------------
+Tango::DevString SocketDS::read_nchar()
+{
+	Tango::DevString argout;
+	DEBUG_STREAM << "SocketDS::ReadNChar()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::read_nchar) ENABLED START -----*/
+	
+	//	Add your own code
+	std::stringstream result;
+	result << "";
+
+	try
+	{
+		DEBUG_STREAM << "point before read" << endl;
+		socket_read_nchar(20); // ??? FOR CONSTANT
+		//result << data_;
+		result << buff.data();
+		//DEBUG_STREAM << "point after read" << ":" <<data_[0] << ":" << data_[1] << "|sssssss" <<endl;
+		//DEBUG_STREAM << "SIZE DATA: " << data_.size() << endl;
+		DEBUG_STREAM << "point after read" << ":" << buff[0] << ":" << buff[1] << "|sssssss" << endl;
+		DEBUG_STREAM << "SIZE DATA: " << buff.size() << endl;
+	}
+	catch (std::exception& e)
+	{
+		set_state(Tango::FAULT);
+		std::stringstream desc;
+		desc << "Connection exception: " << e.what();
+		set_status(desc.str());
+		std::stringstream origin;
+		origin << "Socket::read()";
+		Tango::Except::throw_exception((const char *) "SocketError", desc.str(), origin.str());
+	}
+
+	argout = Tango::string_dup(result.str().c_str());
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::read_nchar
 	return argout;
 }
 
@@ -635,13 +688,23 @@ void SocketDS::socket_read_nchar(int nChar)
 	// object is used as a callback and will update the ec variable when the
 	// operation completes. The blocking_udp_client.cpp example shows how you
 	// can use boost::bind rather than boost::lambda.
-	boost::asio::async_read(*socket, boost::asio::buffer(buf,nChar), boost::lambda::var(ec) = boost::lambda::_1);
+	//boost::asio::async_read(*socket, boost::asio::buffer(&data_,nChar), boost::lambda::var(ec) = boost::lambda::_1);
+	
+	boost::asio::async_read(*socket, boost::asio::buffer(buff),boost::asio::transfer_at_least(4), boost::lambda::var(ec) = boost::lambda::_1);
 
 	// Block until the asynchronous operation has completed.
 	do io_service->run_one(); while (ec == boost::asio::error::would_block);
 
 	if (ec)
 		throw boost::system::system_error(ec);
+}
+
+void SocketDS::on_read(
+	const boost::system::error_code& error,
+	std::size_t bytes_transferred)
+{
+	DEBUG_STREAM << "read " << bytes_transferred << " bytes with "
+		<< error.message() << std::endl;
 }
 
 void SocketDS::socket_read()
