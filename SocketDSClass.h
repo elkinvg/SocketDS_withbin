@@ -243,11 +243,11 @@ public:
 	{return (static_cast<SocketDS *>(dev))->is_CheckConnection_allowed(any);}
 };
 
-//	Command WriteAndReadNChar class definition
-class WriteAndReadNCharClass : public Tango::Command
+//	Command WriteAndReadBinary class definition
+class WriteAndReadBinaryClass : public Tango::Command
 {
 public:
-	WriteAndReadNCharClass(const char   *name,
+	WriteAndReadBinaryClass(const char   *name,
 	               Tango::CmdArgType in,
 				   Tango::CmdArgType out,
 				   const char        *in_desc,
@@ -255,22 +255,22 @@ public:
 				   Tango::DispLevel  level)
 	:Command(name,in,out,in_desc,out_desc, level)	{};
 
-	WriteAndReadNCharClass(const char   *name,
+	WriteAndReadBinaryClass(const char   *name,
 	               Tango::CmdArgType in,
 				   Tango::CmdArgType out)
 	:Command(name,in,out)	{};
-	~WriteAndReadNCharClass() {};
+	~WriteAndReadBinaryClass() {};
 	
 	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
 	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
-	{return (static_cast<SocketDS *>(dev))->is_WriteAndReadNChar_allowed(any);}
+	{return (static_cast<SocketDS *>(dev))->is_WriteAndReadBinary_allowed(any);}
 };
 
-//	Command ReadNChar class definition
-class ReadNCharClass : public Tango::Command
+//	Command ReadBinary class definition
+class ReadBinaryClass : public Tango::Command
 {
 public:
-	ReadNCharClass(const char   *name,
+	ReadBinaryClass(const char   *name,
 	               Tango::CmdArgType in,
 				   Tango::CmdArgType out,
 				   const char        *in_desc,
@@ -278,15 +278,38 @@ public:
 				   Tango::DispLevel  level)
 	:Command(name,in,out,in_desc,out_desc, level)	{};
 
-	ReadNCharClass(const char   *name,
+	ReadBinaryClass(const char   *name,
 	               Tango::CmdArgType in,
 				   Tango::CmdArgType out)
 	:Command(name,in,out)	{};
-	~ReadNCharClass() {};
+	~ReadBinaryClass() {};
 	
 	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
 	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
-	{return (static_cast<SocketDS *>(dev))->is_ReadNChar_allowed(any);}
+	{return (static_cast<SocketDS *>(dev))->is_ReadBinary_allowed(any);}
+};
+
+//	Command WriteBinary class definition
+class WriteBinaryClass : public Tango::Command
+{
+public:
+	WriteBinaryClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	WriteBinaryClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~WriteBinaryClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<SocketDS *>(dev))->is_WriteBinary_allowed(any);}
 };
 
 

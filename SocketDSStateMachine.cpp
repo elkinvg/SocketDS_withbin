@@ -206,31 +206,46 @@ bool SocketDS::is_CheckConnection_allowed(TANGO_UNUSED(const CORBA::Any &any))
 
 //--------------------------------------------------------
 /**
- *	Method      : SocketDS::is_WriteAndReadNChar_allowed()
- *	Description : Execution allowed for WriteAndReadNChar attribute
+ *	Method      : SocketDS::is_WriteAndReadBinary_allowed()
+ *	Description : Execution allowed for WriteAndReadBinary attribute
  */
 //--------------------------------------------------------
-bool SocketDS::is_WriteAndReadNChar_allowed(TANGO_UNUSED(const CORBA::Any &any))
+bool SocketDS::is_WriteAndReadBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
 {
-	//	Not any excluded states for WriteAndReadNChar command.
-	/*----- PROTECTED REGION ID(SocketDS::WriteAndReadNCharStateAllowed) ENABLED START -----*/
+	//	Not any excluded states for WriteAndReadBinary command.
+	/*----- PROTECTED REGION ID(SocketDS::WriteAndReadBinaryStateAllowed) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteAndReadNCharStateAllowed
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteAndReadBinaryStateAllowed
 	return true;
 }
 
 //--------------------------------------------------------
 /**
- *	Method      : SocketDS::is_ReadNChar_allowed()
- *	Description : Execution allowed for ReadNChar attribute
+ *	Method      : SocketDS::is_ReadBinary_allowed()
+ *	Description : Execution allowed for ReadBinary attribute
  */
 //--------------------------------------------------------
-bool SocketDS::is_ReadNChar_allowed(TANGO_UNUSED(const CORBA::Any &any))
+bool SocketDS::is_ReadBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
 {
-	//	Not any excluded states for ReadNChar command.
-	/*----- PROTECTED REGION ID(SocketDS::ReadNCharStateAllowed) ENABLED START -----*/
+	//	Not any excluded states for ReadBinary command.
+	/*----- PROTECTED REGION ID(SocketDS::ReadBinaryStateAllowed) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	SocketDS::ReadNCharStateAllowed
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::ReadBinaryStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : SocketDS::is_WriteBinary_allowed()
+ *	Description : Execution allowed for WriteBinary attribute
+ */
+//--------------------------------------------------------
+bool SocketDS::is_WriteBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for WriteBinary command.
+	/*----- PROTECTED REGION ID(SocketDS::WriteBinaryStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteBinaryStateAllowed
 	return true;
 }
 

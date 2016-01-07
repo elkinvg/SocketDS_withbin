@@ -57,20 +57,21 @@ static const char *RcsId = "$Id:  $";
 //  The following table gives the correspondence
 //  between command and method names.
 //
-//  Command name       |  Method name
+//  Command name        |  Method name
 //================================================================
-//  State              |  Inherited (no method)
-//  Status             |  Inherited (no method)
-//  Write              |  write
-//  Read               |  read
-//  Reconnect          |  reconnect
-//  WriteAndRead       |  write_and_read
-//  Readln             |  readln
-//  ReadUntil          |  read_until
-//  WriteReadUntil     |  write_read_until
-//  CheckConnection    |  check_connection
-//  WriteAndReadNChar  |  write_and_read_nchar
-//  ReadNChar          |  read_nchar
+//  State               |  Inherited (no method)
+//  Status              |  Inherited (no method)
+//  Write               |  write
+//  Read                |  read
+//  Reconnect           |  reconnect
+//  WriteAndRead        |  write_and_read
+//  Readln              |  readln
+//  ReadUntil           |  read_until
+//  WriteReadUntil      |  write_read_until
+//  CheckConnection     |  check_connection
+//  WriteAndReadBinary  |  write_and_read_binary
+//  ReadBinary          |  read_binary
+//  WriteBinary         |  write_binary
 //================================================================
 
 //================================================================
@@ -184,8 +185,6 @@ void SocketDS::init_device()
 		set_state(Tango::ON);
 		set_status("Connected!");
 		DEBUG_STREAM << "Success!"<< endl;
-		//elkin
-		data_.resize(10);
 	}
 	catch(std::exception& e)
 	{
@@ -298,7 +297,7 @@ void SocketDS::get_device_property()
 //--------------------------------------------------------
 void SocketDS::always_executed_hook()
 {
-	INFO_STREAM << "SocketDS::always_executed_hook()  " << device_name << endl;
+	//INFO_STREAM << "SocketDS::always_executed_hook()  " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::always_executed_hook) ENABLED START -----*/
 	
 	//	code always executed before all requests
@@ -389,10 +388,8 @@ Tango::DevString SocketDS::read()
 
 	try
 	{
-		DEBUG_STREAM << "point before read" << endl;
 		socket_read();
 		result << buffer;
-		DEBUG_STREAM << "point after read" << endl;
 	}
 	catch (std::exception& e)
 	{
@@ -445,7 +442,6 @@ Tango::DevString SocketDS::write_and_read(Tango::DevString argin)
 	
 	write(argin);
 	argout = read();
-	DEBUG_STREAM << "point after WR!!!!" << endl;
 		
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read
 	return argout;
@@ -571,61 +567,50 @@ void SocketDS::check_connection()
 }
 //--------------------------------------------------------
 /**
- *	Command WriteAndReadNChar related method
- *	Description: Write command and read reply
+ *	Command WriteAndReadBinary related method
+ *	Description: Write command and read reply (binary)
  *
- *	@param argin [0] - command
- *               [1] - Number of characters in reply
+ *	@param argin command
  *	@returns Reply String
  */
 //--------------------------------------------------------
-Tango::DevString SocketDS::write_and_read_nchar(const Tango::DevVarStringArray *argin)
+Tango::DevString SocketDS::write_and_read_binary(Tango::DevString argin)
 {
 	Tango::DevString argout;
-	DEBUG_STREAM << "SocketDS::WriteAndReadNChar()  - " << device_name << endl;
-	/*----- PROTECTED REGION ID(SocketDS::write_and_read_nchar) ENABLED START -----*/
+	DEBUG_STREAM << "SocketDS::WriteAndReadBinary()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::write_and_read_binary) ENABLED START -----*/
 	
 	//	Add your own code
-	int nChar;
-	stringstream command, nCharStr;
-	command << (*argin)[0];
-	nCharStr << (*argin)[1];
-	write(Tango::string_dup(command.str().c_str()));
-	if (!(nCharStr >> nChar)) nChar = 0;
-	argout = read_nchar();
+	stringstream command;
+	command << argin;
+	write_binary(Tango::string_dup(command.str().c_str()));
+	argout = read_binary();
 	
 	//argout = read_until(Tango::string_dup(until.str().c_str()));
-	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read_nchar
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_and_read_binary
 	return argout;
 }
 //--------------------------------------------------------
 /**
- *	Command ReadNChar related method
+ *	Command ReadBinary related method
  *	Description: Command used to read a string from the socket.
  *
  *	@returns 
  */
 //--------------------------------------------------------
-Tango::DevString SocketDS::read_nchar()
+Tango::DevString SocketDS::read_binary()
 {
 	Tango::DevString argout;
-	DEBUG_STREAM << "SocketDS::ReadNChar()  - " << device_name << endl;
-	/*----- PROTECTED REGION ID(SocketDS::read_nchar) ENABLED START -----*/
+	DEBUG_STREAM << "SocketDS::ReadBinary()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::read_binary) ENABLED START -----*/
 	
 	//	Add your own code
 	std::stringstream result;
 	result << "";
-
 	try
 	{
-		DEBUG_STREAM << "point before read" << endl;
-		socket_read_nchar(20); // ??? FOR CONSTANT
-		//result << data_;
-		result << buff.data();
-		//DEBUG_STREAM << "point after read" << ":" <<data_[0] << ":" << data_[1] << "|sssssss" <<endl;
-		//DEBUG_STREAM << "SIZE DATA: " << data_.size() << endl;
-		DEBUG_STREAM << "point after read" << ":" << buff[0] << ":" << buff[1] << "|sssssss" << endl;
-		DEBUG_STREAM << "SIZE DATA: " << buff.size() << endl;
+		socket_read_binary(); // ??? FOR CONSTANT
+		result << buffer;
 	}
 	catch (std::exception& e)
 	{
@@ -634,14 +619,46 @@ Tango::DevString SocketDS::read_nchar()
 		desc << "Connection exception: " << e.what();
 		set_status(desc.str());
 		std::stringstream origin;
-		origin << "Socket::read()";
+		origin << "Socket::read_binary()";
 		Tango::Except::throw_exception((const char *) "SocketError", desc.str(), origin.str());
 	}
-
 	argout = Tango::string_dup(result.str().c_str());
 	
-	/*----- PROTECTED REGION END -----*/	//	SocketDS::read_nchar
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::read_binary
 	return argout;
+}
+//--------------------------------------------------------
+/**
+ *	Command WriteBinary related method
+ *	Description: Command used to send a string to the socket. (binary)
+ *
+ *	@param argin 
+ */
+//--------------------------------------------------------
+void SocketDS::write_binary(Tango::DevString argin)
+{
+	DEBUG_STREAM << "SocketDS::WriteBinary()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::write_binary) ENABLED START -----*/
+	
+	//	Add your own code
+	try
+	{
+		std::stringstream command;
+		command << argin;
+		socket_write_binary(command.str());
+	}
+	catch (std::exception& e)
+	{
+		set_state(Tango::FAULT);
+		std::stringstream desc;
+		desc << "Connection exception: " << e.what();
+		set_status(desc.str());
+		std::stringstream origin;
+		origin << "Socket::write(" << argin << ") ";
+		Tango::Except::throw_exception((const char *) "SocketError", desc.str(), origin.str());
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_binary
 }
 
 /*----- PROTECTED REGION ID(SocketDS::namespace_ending) ENABLED START -----*/
@@ -663,15 +680,16 @@ void SocketDS::check_deadline()
 		// There is no longer an active deadline. The expiry is set to positive
 		// infinity so that the actor takes no action until a new deadline is set.
 		timer->expires_at(boost::posix_time::pos_infin);
+		DEBUG_STREAM << "DEADLINE FAULT " << endl;
 	}
 
 	// Put the actor back to sleep.
 	timer->async_wait(bind(&SocketDS::check_deadline, this));
+	DEBUG_STREAM << "DEADLINE" << endl;
 }
 
-void SocketDS::socket_read_nchar(int nChar)
+void SocketDS::socket_read_binary()
 {
-	std::string buf;
 	// Set a deadline for the asynchronous operation. Since this function uses
 	// a composed operation (async_read_until), the deadline applies to the
 	// entire operation, rather than individual reads from the socket.
@@ -688,23 +706,41 @@ void SocketDS::socket_read_nchar(int nChar)
 	// object is used as a callback and will update the ec variable when the
 	// operation completes. The blocking_udp_client.cpp example shows how you
 	// can use boost::bind rather than boost::lambda.
-	//boost::asio::async_read(*socket, boost::asio::buffer(&data_,nChar), boost::lambda::var(ec) = boost::lambda::_1);
+	boost::asio::async_read(*socket,*buffer, boost::asio::transfer_at_least(1), boost::lambda::var(ec) = boost::lambda::_1);
+	// Block until the asynchronous operation has completed.
+	do {io_service->run_one();} while (ec == boost::asio::error::would_block);
 	
-	boost::asio::async_read(*socket, boost::asio::buffer(buff),boost::asio::transfer_at_least(4), boost::lambda::var(ec) = boost::lambda::_1);
+	if (ec)
+		throw boost::system::system_error(ec);
+}
+
+void SocketDS::socket_write_binary(std::string message)
+{
+	std::string data = message;
+
+	// Set a deadline for the asynchronous operation. Since this function uses
+	// a composed operation (async_write), the deadline applies to the entire
+	// operation, rather than individual writes to the socket.
+	timer->expires_from_now(boost::posix_time::milliseconds(readtimeout));
+
+	// Set up the variable that receives the result of the asynchronous
+	// operation. The error code is set to would_block to signal that the
+	// operation is incomplete. Asio guarantees that its asynchronous
+	// operations will never fail with would_block, so any other value in
+	// ec indicates completion.
+	boost::system::error_code ec = boost::asio::error::would_block;
+
+	// Start the asynchronous operation itself. The boost::lambda function
+	// object is used as a callback and will update the ec variable when the
+	// operation completes. The blocking_udp_client.cpp example shows how you
+	// can use boost::bind rather than boost::lambda.
+	boost::asio::async_write(*socket, boost::asio::buffer(data), boost::lambda::var(ec) = boost::lambda::_1);
 
 	// Block until the asynchronous operation has completed.
 	do io_service->run_one(); while (ec == boost::asio::error::would_block);
 
 	if (ec)
 		throw boost::system::system_error(ec);
-}
-
-void SocketDS::on_read(
-	const boost::system::error_code& error,
-	std::size_t bytes_transferred)
-{
-	DEBUG_STREAM << "read " << bytes_transferred << " bytes with "
-		<< error.message() << std::endl;
 }
 
 void SocketDS::socket_read()

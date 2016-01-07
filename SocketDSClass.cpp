@@ -307,7 +307,7 @@ CORBA::Any *CheckConnectionClass::execute(Tango::DeviceImpl *device, TANGO_UNUSE
 
 //--------------------------------------------------------
 /**
- * method : 		WriteAndReadNCharClass::execute()
+ * method : 		WriteAndReadBinaryClass::execute()
  * description : 	method to trigger the execution of the command.
  *
  * @param	device	The device on which the command must be executed
@@ -316,17 +316,17 @@ CORBA::Any *CheckConnectionClass::execute(Tango::DeviceImpl *device, TANGO_UNUSE
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *WriteAndReadNCharClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *WriteAndReadBinaryClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
-	cout2 << "WriteAndReadNCharClass::execute(): arrived" << endl;
-	const Tango::DevVarStringArray *argin;
+	cout2 << "WriteAndReadBinaryClass::execute(): arrived" << endl;
+	Tango::DevString argin;
 	extract(in_any, argin);
-	return insert((static_cast<SocketDS *>(device))->write_and_read_nchar(argin));
+	return insert((static_cast<SocketDS *>(device))->write_and_read_binary(argin));
 }
 
 //--------------------------------------------------------
 /**
- * method : 		ReadNCharClass::execute()
+ * method : 		ReadBinaryClass::execute()
  * description : 	method to trigger the execution of the command.
  *
  * @param	device	The device on which the command must be executed
@@ -335,10 +335,30 @@ CORBA::Any *WriteAndReadNCharClass::execute(Tango::DeviceImpl *device, const COR
  *	returns The command output data (packed in the Any object)
  */
 //--------------------------------------------------------
-CORBA::Any *ReadNCharClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+CORBA::Any *ReadBinaryClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
-	cout2 << "ReadNCharClass::execute(): arrived" << endl;
-	return insert((static_cast<SocketDS *>(device))->read_nchar());
+	cout2 << "ReadBinaryClass::execute(): arrived" << endl;
+	return insert((static_cast<SocketDS *>(device))->read_binary());
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		WriteBinaryClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *WriteBinaryClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	cout2 << "WriteBinaryClass::execute(): arrived" << endl;
+	Tango::DevString argin;
+	extract(in_any, argin);
+	((static_cast<SocketDS *>(device))->write_binary(argin));
+	return new CORBA::Any();
 }
 
 
@@ -763,23 +783,32 @@ void SocketDSClass::command_factory()
 			Tango::OPERATOR);
 	command_list.push_back(pCheckConnectionCmd);
 
-	//	Command WriteAndReadNChar
-	WriteAndReadNCharClass	*pWriteAndReadNCharCmd =
-		new WriteAndReadNCharClass("WriteAndReadNChar",
-			Tango::DEVVAR_STRINGARRAY, Tango::DEV_STRING,
-			"[0] - command\n[1] - Number of characters in reply",
+	//	Command WriteAndReadBinary
+	WriteAndReadBinaryClass	*pWriteAndReadBinaryCmd =
+		new WriteAndReadBinaryClass("WriteAndReadBinary",
+			Tango::DEV_STRING, Tango::DEV_STRING,
+			"command",
 			"Reply String",
 			Tango::OPERATOR);
-	command_list.push_back(pWriteAndReadNCharCmd);
+	command_list.push_back(pWriteAndReadBinaryCmd);
 
-	//	Command ReadNChar
-	ReadNCharClass	*pReadNCharCmd =
-		new ReadNCharClass("ReadNChar",
+	//	Command ReadBinary
+	ReadBinaryClass	*pReadBinaryCmd =
+		new ReadBinaryClass("ReadBinary",
 			Tango::DEV_VOID, Tango::DEV_STRING,
 			"",
 			"",
 			Tango::OPERATOR);
-	command_list.push_back(pReadNCharCmd);
+	command_list.push_back(pReadBinaryCmd);
+
+	//	Command WriteBinary
+	WriteBinaryClass	*pWriteBinaryCmd =
+		new WriteBinaryClass("WriteBinary",
+			Tango::DEV_STRING, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pWriteBinaryCmd);
 
 	/*----- PROTECTED REGION ID(SocketDSClass::command_factory_after) ENABLED START -----*/
 	

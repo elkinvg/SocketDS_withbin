@@ -241,23 +241,30 @@ public:
 	virtual void check_connection();
 	virtual bool is_CheckConnection_allowed(const CORBA::Any &any);
 	/**
-	 *	Command WriteAndReadNChar related method
-	 *	Description: Write command and read reply
+	 *	Command WriteAndReadBinary related method
+	 *	Description: Write command and read reply (binary)
 	 *
-	 *	@param argin [0] - command
-	 *               [1] - Number of characters in reply
+	 *	@param argin command
 	 *	@returns Reply String
 	 */
-	virtual Tango::DevString write_and_read_nchar(const Tango::DevVarStringArray *argin);
-	virtual bool is_WriteAndReadNChar_allowed(const CORBA::Any &any);
+	virtual Tango::DevString write_and_read_binary(Tango::DevString argin);
+	virtual bool is_WriteAndReadBinary_allowed(const CORBA::Any &any);
 	/**
-	 *	Command ReadNChar related method
+	 *	Command ReadBinary related method
 	 *	Description: Command used to read a string from the socket.
 	 *
 	 *	@returns 
 	 */
-	virtual Tango::DevString read_nchar();
-	virtual bool is_ReadNChar_allowed(const CORBA::Any &any);
+	virtual Tango::DevString read_binary();
+	virtual bool is_ReadBinary_allowed(const CORBA::Any &any);
+	/**
+	 *	Command WriteBinary related method
+	 *	Description: Command used to send a string to the socket. (binary)
+	 *
+	 *	@param argin 
+	 */
+	virtual void write_binary(Tango::DevString argin);
+	virtual bool is_WriteBinary_allowed(const CORBA::Any &any);
 
 
 /*----- PROTECTED REGION ID(SocketDS::Additional Method prototypes) ENABLED START -----*/
@@ -267,12 +274,8 @@ public:
 	 void socket_read();
 	 void socket_write(std::string message);
 	 //elkin
-	 std::string data_;
-	 boost::array<char, 512> buff;
-	 void socket_read_nchar(int nChar);
-	 void on_read(
-		 const boost::system::error_code& error,
-		 std::size_t bytes_transferred);
+	 void socket_read_binary();
+	 void socket_write_binary(std::string message);
 	
 /*----- PROTECTED REGION END -----*/	//	SocketDS::Additional Method prototypes
 };
