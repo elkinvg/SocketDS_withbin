@@ -249,4 +249,19 @@ bool SocketDS::is_WriteBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
 	return true;
 }
 
+//--------------------------------------------------------
+/**
+ *	Method      : SocketDS::is_AvalaibleBytes_allowed()
+ *	Description : Execution allowed for AvalaibleBytes attribute
+ */
+//--------------------------------------------------------
+bool SocketDS::is_AvalaibleBytes_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for AvalaibleBytes command.
+	/*----- PROTECTED REGION ID(SocketDS::AvalaibleBytesStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::AvalaibleBytesStateAllowed
+	return true;
+}
+
 }	//	End of namespace

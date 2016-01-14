@@ -72,6 +72,7 @@ static const char *RcsId = "$Id:  $";
 //  WriteAndReadBinary  |  write_and_read_binary
 //  ReadBinary          |  read_binary
 //  WriteBinary         |  write_binary
+//  AvalaibleBytes      |  avalaible_bytes
 //================================================================
 
 //================================================================
@@ -574,16 +575,14 @@ void SocketDS::check_connection()
  *	@returns Reply String
  */
 //--------------------------------------------------------
-Tango::DevString SocketDS::write_and_read_binary(Tango::DevString argin)
+Tango::DevVarCharArray *SocketDS::write_and_read_binary(const Tango::DevVarCharArray *argin)
 {
-	Tango::DevString argout;
+	Tango::DevVarCharArray *argout;
 	DEBUG_STREAM << "SocketDS::WriteAndReadBinary()  - " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::write_and_read_binary) ENABLED START -----*/
 	
 	//	Add your own code
-	stringstream command;
-	command << argin;
-	write_binary(Tango::string_dup(command.str().c_str()));
+	write_binary(argin);
 	argout = read_binary();
 	
 	//argout = read_until(Tango::string_dup(until.str().c_str()));
@@ -598,19 +597,25 @@ Tango::DevString SocketDS::write_and_read_binary(Tango::DevString argin)
  *	@returns 
  */
 //--------------------------------------------------------
-Tango::DevString SocketDS::read_binary()
+Tango::DevVarCharArray *SocketDS::read_binary()
 {
-	Tango::DevString argout;
+	Tango::DevVarCharArray *argout;
 	DEBUG_STREAM << "SocketDS::ReadBinary()  - " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::read_binary) ENABLED START -----*/
 	
 	//	Add your own code
 	std::stringstream result;
 	result << "";
+	int sizeN;
+
 	try
 	{
 		socket_read_binary(); // ??? FOR CONSTANT
 		result << buffer;
+		sizeN = result.str().size();
+
+		argout = new Tango::DevVarCharArray();
+		argout->length(sizeN);
 	}
 	catch (std::exception& e)
 	{
@@ -622,7 +627,12 @@ Tango::DevString SocketDS::read_binary()
 		origin << "Socket::read_binary()";
 		Tango::Except::throw_exception((const char *) "SocketError", desc.str(), origin.str());
 	}
-	argout = Tango::string_dup(result.str().c_str());
+	string tmpS = result.str();
+
+	for (int i = 0; i < sizeN; i++)
+	{
+		(*argout)[i] = tmpS[i];
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::read_binary
 	return argout;
@@ -635,7 +645,7 @@ Tango::DevString SocketDS::read_binary()
  *	@param argin 
  */
 //--------------------------------------------------------
-void SocketDS::write_binary(Tango::DevString argin)
+void SocketDS::write_binary(const Tango::DevVarCharArray *argin)
 {
 	DEBUG_STREAM << "SocketDS::WriteBinary()  - " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::write_binary) ENABLED START -----*/
@@ -643,9 +653,13 @@ void SocketDS::write_binary(Tango::DevString argin)
 	//	Add your own code
 	try
 	{
-		std::stringstream command;
-		command << argin;
-		socket_write_binary(command.str());
+		string temp;
+		int NN = argin->length();
+		for (int i = 0; i < NN; i++)
+		{
+			temp.push_back((*argin)[i]);
+		}
+		socket_write_binary(temp);
 	}
 	catch (std::exception& e)
 	{
@@ -659,6 +673,25 @@ void SocketDS::write_binary(Tango::DevString argin)
 	}
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::write_binary
+}
+//--------------------------------------------------------
+/**
+ *	Command AvalaibleBytes related method
+ *	Description: Determine the number of bytes available for reading
+ *
+ *	@returns The number of bytes available for reading
+ */
+//--------------------------------------------------------
+Tango::DevLong SocketDS::avalaible_bytes()
+{
+	Tango::DevLong argout;
+	DEBUG_STREAM << "SocketDS::AvalaibleBytes()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(SocketDS::avalaible_bytes) ENABLED START -----*/
+	
+	argout = socket->available();
+
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::avalaible_bytes
+	return argout;
 }
 
 /*----- PROTECTED REGION ID(SocketDS::namespace_ending) ENABLED START -----*/

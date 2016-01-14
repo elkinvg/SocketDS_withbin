@@ -319,7 +319,7 @@ CORBA::Any *CheckConnectionClass::execute(Tango::DeviceImpl *device, TANGO_UNUSE
 CORBA::Any *WriteAndReadBinaryClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 	cout2 << "WriteAndReadBinaryClass::execute(): arrived" << endl;
-	Tango::DevString argin;
+	const Tango::DevVarCharArray *argin;
 	extract(in_any, argin);
 	return insert((static_cast<SocketDS *>(device))->write_and_read_binary(argin));
 }
@@ -355,10 +355,27 @@ CORBA::Any *ReadBinaryClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(con
 CORBA::Any *WriteBinaryClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 	cout2 << "WriteBinaryClass::execute(): arrived" << endl;
-	Tango::DevString argin;
+	const Tango::DevVarCharArray *argin;
 	extract(in_any, argin);
 	((static_cast<SocketDS *>(device))->write_binary(argin));
 	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		AvalaibleBytesClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *AvalaibleBytesClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "AvalaibleBytesClass::execute(): arrived" << endl;
+	return insert((static_cast<SocketDS *>(device))->avalaible_bytes());
 }
 
 
@@ -786,7 +803,7 @@ void SocketDSClass::command_factory()
 	//	Command WriteAndReadBinary
 	WriteAndReadBinaryClass	*pWriteAndReadBinaryCmd =
 		new WriteAndReadBinaryClass("WriteAndReadBinary",
-			Tango::DEV_STRING, Tango::DEV_STRING,
+			Tango::DEVVAR_CHARARRAY, Tango::DEVVAR_CHARARRAY,
 			"command",
 			"Reply String",
 			Tango::OPERATOR);
@@ -795,7 +812,7 @@ void SocketDSClass::command_factory()
 	//	Command ReadBinary
 	ReadBinaryClass	*pReadBinaryCmd =
 		new ReadBinaryClass("ReadBinary",
-			Tango::DEV_VOID, Tango::DEV_STRING,
+			Tango::DEV_VOID, Tango::DEVVAR_CHARARRAY,
 			"",
 			"",
 			Tango::OPERATOR);
@@ -804,11 +821,20 @@ void SocketDSClass::command_factory()
 	//	Command WriteBinary
 	WriteBinaryClass	*pWriteBinaryCmd =
 		new WriteBinaryClass("WriteBinary",
-			Tango::DEV_STRING, Tango::DEV_VOID,
+			Tango::DEVVAR_CHARARRAY, Tango::DEV_VOID,
 			"",
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pWriteBinaryCmd);
+
+	//	Command AvalaibleBytes
+	AvalaibleBytesClass	*pAvalaibleBytesCmd =
+		new AvalaibleBytesClass("AvalaibleBytes",
+			Tango::DEV_VOID, Tango::DEV_LONG,
+			"",
+			"The number of bytes available for reading",
+			Tango::OPERATOR);
+	command_list.push_back(pAvalaibleBytesCmd);
 
 	/*----- PROTECTED REGION ID(SocketDSClass::command_factory_after) ENABLED START -----*/
 	

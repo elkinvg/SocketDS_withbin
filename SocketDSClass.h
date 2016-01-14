@@ -312,6 +312,29 @@ public:
 	{return (static_cast<SocketDS *>(dev))->is_WriteBinary_allowed(any);}
 };
 
+//	Command AvalaibleBytes class definition
+class AvalaibleBytesClass : public Tango::Command
+{
+public:
+	AvalaibleBytesClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	AvalaibleBytesClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~AvalaibleBytesClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<SocketDS *>(dev))->is_AvalaibleBytes_allowed(any);}
+};
+
 
 /**
  *	The SocketDSClass singleton definition

@@ -121,10 +121,10 @@
     </commands>
     <commands name="WriteAndReadBinary" description="Write command and read reply (binary)" execMethod="write_and_read_binary" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="command">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:CharArrayType"/>
       </argin>
       <argout description="Reply String">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:CharArrayType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
@@ -133,16 +133,25 @@
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
       <argout description="">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:CharArrayType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
     <commands name="WriteBinary" description="Command used to send a string to the socket. (binary)" execMethod="write_binary" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:CharArrayType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="AvalaibleBytes" description="Determine the number of bytes available for reading" execMethod="avalaible_bytes" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="The number of bytes available for reading">
+        <type xsi:type="pogoDsl:IntType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>

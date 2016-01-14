@@ -247,7 +247,7 @@ public:
 	 *	@param argin command
 	 *	@returns Reply String
 	 */
-	virtual Tango::DevString write_and_read_binary(Tango::DevString argin);
+	virtual Tango::DevVarCharArray *write_and_read_binary(const Tango::DevVarCharArray *argin);
 	virtual bool is_WriteAndReadBinary_allowed(const CORBA::Any &any);
 	/**
 	 *	Command ReadBinary related method
@@ -255,7 +255,7 @@ public:
 	 *
 	 *	@returns 
 	 */
-	virtual Tango::DevString read_binary();
+	virtual Tango::DevVarCharArray *read_binary();
 	virtual bool is_ReadBinary_allowed(const CORBA::Any &any);
 	/**
 	 *	Command WriteBinary related method
@@ -263,8 +263,16 @@ public:
 	 *
 	 *	@param argin 
 	 */
-	virtual void write_binary(Tango::DevString argin);
+	virtual void write_binary(const Tango::DevVarCharArray *argin);
 	virtual bool is_WriteBinary_allowed(const CORBA::Any &any);
+	/**
+	 *	Command AvalaibleBytes related method
+	 *	Description: Determine the number of bytes available for reading
+	 *
+	 *	@returns The number of bytes available for reading
+	 */
+	virtual Tango::DevLong avalaible_bytes();
+	virtual bool is_AvalaibleBytes_allowed(const CORBA::Any &any);
 
 
 /*----- PROTECTED REGION ID(SocketDS::Additional Method prototypes) ENABLED START -----*/
