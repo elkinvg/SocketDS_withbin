@@ -43,6 +43,9 @@
 //#define _WIN32_WINNT_WIN7 0x0601
 //#define _MSC_VER 1700
 //#define WINVER 0x0601
+#ifdef _WIN32
+#define WINVER 0x0A00
+#endif
 #include <tango.h>
 #include <cstdlib>
 #include <cstring>
