@@ -54,7 +54,7 @@ OUTPUT_TYPE = DEVICE
 #	- $HOME/DeviceServers if OUTPUT_TYPE is DEVICE
 #	- ../bin for others
 #
-OUTPUT_DIR = ./bin/$(BIN_DIR)
+#OUTPUT_DIR = ./bin/$(BIN_DIR)
 
 
 #=============================================================================
