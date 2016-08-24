@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
-  <classes name="SocketDS" pogoRevision="8.1">
-    <description description="This class implements basic `socket` IPC." title="Socket" sourcePath="C:\Users\elkin\Documents\Visual Studio 2015\Projects\Socket" language="Cpp" filestogenerate="XMI   file,Code files" license="GPL" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
-      <inheritances classname="Device_4Impl" sourcePath="/segfs/tango/templates/AbstractClasses"/>
+  <classes name="SocketDS" pogoRevision="9.1">
+    <description description="This class implements basic `socket` IPC." title="Socket" sourcePath="D:\progrdir\vs12_2013\fortango\socket_boost_fortango" language="Cpp" filestogenerate="XMI   file,Code files,Protected Regions,html Pages" license="GPL" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+      <inheritances classname="Device_4Impl" sourcePath="../../../../segfs/tango/templates/AbstractClasses"/>
       <identification contact="at dubna.tk - egor" author="egor" emailDomain="dubna.tk" classFamily="Communication" siteSpecific="" platform="All Platforms" bus="Socket" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="Hostname" description="This is the hostname of the host to connect to.">
@@ -21,6 +21,11 @@
       <type xsi:type="pogoDsl:BooleanType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>false</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="no_delay" description="disabling the Nagle algorithm.">
+      <type xsi:type="pogoDsl:BooleanType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>1</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its &lt;i>device_state&lt;/i> data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none.">

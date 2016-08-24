@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> SocketDS Tango Class Commands </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=5> <font size=+1> <center><b> SocketDS Class Commands </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Input type </b></center> </td>
+		<td> <center><b> Output type </b></center> </td>
+		<td> <center><b> Level </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdState.html"> State </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STATE </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device state (stored in its <i>device_state</i> data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStatus.html"> Status </a> </td>
+		<td> DEV_VOID </td>
+		<td> CONST_DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device status (stored in its <i>device_status</i> data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWrite.html"> Write </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Command used to send a string to the socket. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdRead.html"> Read </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Command used to read a string from the socket. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReconnect.html"> Reconnect </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Attempts to re-establish the socket connection. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteAndRead.html"> WriteAndRead </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Write to the socket and waits for the answer.<Br>
+			The end of the answer is triggered by the new line character! </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReadln.html"> Readln </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Reads from a socket until a &quot;\n&quot; has been received. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReadUntil.html"> ReadUntil </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> This command read data from the socket until the terminator has been reached. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteReadUntil.html"> WriteReadUntil </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Write to the socket and waits for the answer.<Br>
+			The answer is triggered by select() which indicates that the the anser has arrived. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdCheckConnection.html"> CheckConnection </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteAndReadBinary.html"> WriteAndReadBinary </a> </td>
+		<td> DEVVAR_CHARARRAY </td>
+		<td> DEVVAR_CHARARRAY </td>
+		<td> OPERATOR </td>
+		<td> Write command and read reply (binary) </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReadBinary.html"> ReadBinary </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEVVAR_CHARARRAY </td>
+		<td> OPERATOR </td>
+		<td> Command used to read a string from the socket. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteBinary.html"> WriteBinary </a> </td>
+		<td> DEVVAR_CHARARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Command used to send a string to the socket. (binary) </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdAvalaibleBytes.html"> AvalaibleBytes </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_LONG </td>
+		<td> OPERATOR </td>
+		<td> Determine the number of bytes available for reading </td>
+	</tr>
+</table>
+</body>
+</html>
