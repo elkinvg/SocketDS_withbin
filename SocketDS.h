@@ -101,6 +101,8 @@ public:
 	//	AutoReconnect:	If true, the server try to re-create and re-connect to the socket after a failure.
 	//  NOTE : The default values is false.
 	Tango::DevBoolean	autoReconnect;
+	//	no_delay:	disabling the Nagle algorithm.
+	Tango::DevBoolean	no_delay;
 
 
 //	Constructors and destructors
@@ -129,7 +131,7 @@ public:
 	SocketDS(Tango::DeviceClass *cl,const char *s,const char *d);
 	/**
 	 * The device object destructor.
-	 */	
+	 */
 	~SocketDS() {delete_device();};
 
 
@@ -171,6 +173,7 @@ public:
 	 */
 	//--------------------------------------------------------
 	void add_dynamic_attributes();
+
 
 
 
@@ -277,6 +280,14 @@ public:
 	virtual Tango::DevLong avalaible_bytes();
 	virtual bool is_AvalaibleBytes_allowed(const CORBA::Any &any);
 
+
+	//--------------------------------------------------------
+	/**
+	 *	Method      : SocketDS::add_dynamic_commands()
+	 *	Description : Add dynamic commands if any.
+	 */
+	//--------------------------------------------------------
+	void add_dynamic_commands();
 
 /*----- PROTECTED REGION ID(SocketDS::Additional Method prototypes) ENABLED START -----*/
 

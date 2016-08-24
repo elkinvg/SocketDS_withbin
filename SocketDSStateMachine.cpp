@@ -52,6 +52,7 @@ namespace SocketDS_ns
 //		Attributes Allowed Methods
 //=================================================
 
+
 //=================================================
 //		Commands Allowed Methods
 //=================================================
@@ -263,5 +264,12 @@ bool SocketDS::is_AvalaibleBytes_allowed(TANGO_UNUSED(const CORBA::Any &any))
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::AvalaibleBytesStateAllowed
 	return true;
 }
+
+
+/*----- PROTECTED REGION ID(SocketDS::SocketDSStateAllowed.AdditionalMethods) ENABLED START -----*/
+
+//	Additional Methods
+
+/*----- PROTECTED REGION END -----*/	//	SocketDS::SocketDSStateAllowed.AdditionalMethods
 
 }	//	End of namespace

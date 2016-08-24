@@ -162,7 +162,6 @@ void SocketDS::init_device()
 	//	Get the device properties from database
 	get_device_property();
 	
-
 	/*----- PROTECTED REGION ID(SocketDS::init_device) ENABLED START -----*/
 	
 	//	Initialize device
@@ -177,7 +176,12 @@ void SocketDS::init_device()
 		socket = new boost::asio::ip::tcp::socket(*io_service);
 		timer = new boost::asio::deadline_timer(*io_service);
 		ep = new boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(ip), port);
-		buffer = new boost::asio::streambuf(1000);
+        buffer = new boost::asio::streambuf(1000);
+        if (no_delay) {
+            boost::asio::ip::tcp::no_delay option(true);
+            socket->set_option(option);
+        }
+
 		socket->connect(*ep);
 		
 		timer->expires_at(boost::posix_time::pos_infin);
@@ -223,6 +227,7 @@ void SocketDS::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("Port"));
 	dev_prop.push_back(Tango::DbDatum("Readtimeout"));
 	dev_prop.push_back(Tango::DbDatum("AutoReconnect"));
+	dev_prop.push_back(Tango::DbDatum("no_delay"));
 
 	//	is there at least one property to be read ?
 	if (dev_prop.size()>0)
@@ -281,6 +286,17 @@ void SocketDS::get_device_property()
 		//	And try to extract AutoReconnect value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoReconnect;
 
+		//	Try to initialize no_delay from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  no_delay;
+		else {
+			//	Try to initialize no_delay from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  no_delay;
+		}
+		//	And try to extract no_delay value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  no_delay;
+
 	}
 
 	/*----- PROTECTED REGION ID(SocketDS::get_device_property_after) ENABLED START -----*/
@@ -298,7 +314,7 @@ void SocketDS::get_device_property()
 //--------------------------------------------------------
 void SocketDS::always_executed_hook()
 {
-	//INFO_STREAM << "SocketDS::always_executed_hook()  " << device_name << endl;
+	DEBUG_STREAM << "SocketDS::always_executed_hook()  " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::always_executed_hook) ENABLED START -----*/
 	
 	//	code always executed before all requests
@@ -692,6 +708,21 @@ Tango::DevLong SocketDS::avalaible_bytes()
 
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::avalaible_bytes
 	return argout;
+}
+//--------------------------------------------------------
+/**
+ *	Method      : SocketDS::add_dynamic_commands()
+ *	Description : Create the dynamic commands if any
+ *                for specified device.
+ */
+//--------------------------------------------------------
+void SocketDS::add_dynamic_commands()
+{
+	/*----- PROTECTED REGION ID(SocketDS::add_dynamic_commands) ENABLED START -----*/
+	
+	//	Add your own code to create and add dynamic commands if any
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDS::add_dynamic_commands
 }
 
 /*----- PROTECTED REGION ID(SocketDS::namespace_ending) ENABLED START -----*/

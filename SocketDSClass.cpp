@@ -131,8 +131,8 @@ SocketDSClass *SocketDSClass::init(const char *name)
 		catch (bad_alloc &)
 		{
 			throw;
-		}		
-	}		
+		}
+	}
 	return _instance;
 }
 
@@ -500,6 +500,20 @@ void SocketDSClass::set_default_property()
 	}
 	else
 		add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "no_delay";
+	prop_desc = "disabling the Nagle algorithm.";
+	prop_def  = "1";
+	vect_data.clear();
+	vect_data.push_back("1");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
 }
 
 //--------------------------------------------------------
@@ -664,7 +678,7 @@ void SocketDSClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 	for (unsigned long i=0 ; i<devlist_ptr->length() ; i++)
 	{
 		cout4 << "Device name : " << (*devlist_ptr)[i].in() << endl;
-		device_list.push_back(new SocketDS(this, (*devlist_ptr)[i]));							 
+		device_list.push_back(new SocketDS(this, (*devlist_ptr)[i]));
 	}
 
 	//	Manage dynamic attributes if any
@@ -704,6 +718,7 @@ void SocketDSClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Add your own code
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDSClass::attribute_factory_before
+
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());
 	/*----- PROTECTED REGION ID(SocketDSClass::attribute_factory_after) ENABLED START -----*/
@@ -711,6 +726,26 @@ void SocketDSClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Add your own code
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDSClass::attribute_factory_after
+}
+//--------------------------------------------------------
+/**
+ *	Method      : SocketDSClass::pipe_factory()
+ *	Description : Create the pipe object(s)
+ *                and store them in the pipe list
+ */
+//--------------------------------------------------------
+void SocketDSClass::pipe_factory()
+{
+	/*----- PROTECTED REGION ID(SocketDSClass::pipe_factory_before) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDSClass::pipe_factory_before
+	/*----- PROTECTED REGION ID(SocketDSClass::pipe_factory_after) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	SocketDSClass::pipe_factory_after
 }
 //--------------------------------------------------------
 /**
@@ -798,6 +833,7 @@ void SocketDSClass::command_factory()
 			"",
 			"",
 			Tango::OPERATOR);
+	pCheckConnectionCmd->set_polling_period(3000);
 	command_list.push_back(pCheckConnectionCmd);
 
 	//	Command WriteAndReadBinary
@@ -852,7 +888,7 @@ void SocketDSClass::command_factory()
  * method : 		SocketDSClass::create_static_attribute_list
  * description : 	Create the a list of static attributes
  *
- * @param	att_list	the ceated attribute list 
+ * @param	att_list	the ceated attribute list
  */
 //--------------------------------------------------------
 void SocketDSClass::create_static_attribute_list(vector<Tango::Attr *> &att_list)
@@ -886,10 +922,10 @@ void SocketDSClass::erase_dynamic_attributes(const Tango::DevVarStringArray *dev
 	Tango::Util *tg = Tango::Util::instance();
 
 	for (unsigned long i=0 ; i<devlist_ptr->length() ; i++)
-	{	
+	{
 		Tango::DeviceImpl *dev_impl = tg->get_device_by_name(((string)(*devlist_ptr)[i]).c_str());
 		SocketDS *dev = static_cast<SocketDS *> (dev_impl);
-		
+
 		vector<Tango::Attribute *> &dev_att_list = dev->get_device_attr()->get_attribute_list();
 		vector<Tango::Attribute *>::iterator ite_att;
 		for (ite_att=dev_att_list.begin() ; ite_att != dev_att_list.end() ; ++ite_att)
@@ -921,7 +957,7 @@ void SocketDSClass::erase_dynamic_attributes(const Tango::DevVarStringArray *dev
 Tango::Attr *SocketDSClass::get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname)
 {
 	vector<Tango::Attr *>::iterator it;
-	for (it=att_list.begin() ; it<att_list.end() ; it++)
+	for (it=att_list.begin() ; it<att_list.end() ; ++it)
 		if ((*it)->get_name()==attname)
 			return (*it);
 	//	Attr does not exist
