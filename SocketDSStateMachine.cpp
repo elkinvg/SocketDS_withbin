@@ -215,7 +215,9 @@ bool SocketDS::is_WriteAndReadBinary_allowed(TANGO_UNUSED(const CORBA::Any &any)
 {
 	//	Not any excluded states for WriteAndReadBinary command.
 	/*----- PROTECTED REGION ID(SocketDS::WriteAndReadBinaryStateAllowed) ENABLED START -----*/
-	
+    if (get_state()==Tango::FAULT) {
+        return false;
+    }
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteAndReadBinaryStateAllowed
 	return true;
 }
@@ -230,7 +232,9 @@ bool SocketDS::is_ReadBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
 {
 	//	Not any excluded states for ReadBinary command.
 	/*----- PROTECTED REGION ID(SocketDS::ReadBinaryStateAllowed) ENABLED START -----*/
-	
+    if (get_state()==Tango::FAULT) {
+        return false;
+    }
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::ReadBinaryStateAllowed
 	return true;
 }
@@ -245,7 +249,9 @@ bool SocketDS::is_WriteBinary_allowed(TANGO_UNUSED(const CORBA::Any &any))
 {
 	//	Not any excluded states for WriteBinary command.
 	/*----- PROTECTED REGION ID(SocketDS::WriteBinaryStateAllowed) ENABLED START -----*/
-	
+    if (get_state()==Tango::FAULT) {
+        return false;
+    }
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::WriteBinaryStateAllowed
 	return true;
 }
@@ -260,7 +266,9 @@ bool SocketDS::is_AvalaibleBytes_allowed(TANGO_UNUSED(const CORBA::Any &any))
 {
 	//	Not any excluded states for AvalaibleBytes command.
 	/*----- PROTECTED REGION ID(SocketDS::AvalaibleBytesStateAllowed) ENABLED START -----*/
-	
+    if (get_state()==Tango::FAULT) {
+        return false;
+    }
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::AvalaibleBytesStateAllowed
 	return true;
 }

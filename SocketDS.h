@@ -101,8 +101,6 @@ public:
 	//	AutoReconnect:	If true, the server try to re-create and re-connect to the socket after a failure.
 	//  NOTE : The default values is false.
 	Tango::DevBoolean	autoReconnect;
-	//	no_delay:	disabling the Nagle algorithm.
-	Tango::DevBoolean	no_delay;
 
 
 //	Constructors and destructors

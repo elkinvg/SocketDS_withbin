@@ -134,7 +134,13 @@ void SocketDS::delete_device()
 	/*----- PROTECTED REGION ID(SocketDS::delete_device) ENABLED START -----*/
 	
 	//	Delete device allocated objects
-	
+//    boost::system::error_code ec;
+//    socket->close(ec);
+//    if (ec)
+//    {
+//        ERROR_STREAM << "close error code " << ec << endl;
+//    }
+
 	delete socket;
 	delete ep;
 	delete io_service;
@@ -177,10 +183,10 @@ void SocketDS::init_device()
 		timer = new boost::asio::deadline_timer(*io_service);
 		ep = new boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(ip), port);
         buffer = new boost::asio::streambuf(1000);
-        if (no_delay) {
-            boost::asio::ip::tcp::no_delay option(true);
-            socket->set_option(option);
-        }
+//        if (no_delay) {
+//            boost::asio::ip::tcp::no_delay option(true);
+//            socket->set_option(option);
+//        }
 
 		socket->connect(*ep);
 		
@@ -227,7 +233,6 @@ void SocketDS::get_device_property()
 	dev_prop.push_back(Tango::DbDatum("Port"));
 	dev_prop.push_back(Tango::DbDatum("Readtimeout"));
 	dev_prop.push_back(Tango::DbDatum("AutoReconnect"));
-	dev_prop.push_back(Tango::DbDatum("no_delay"));
 
 	//	is there at least one property to be read ?
 	if (dev_prop.size()>0)
@@ -285,17 +290,6 @@ void SocketDS::get_device_property()
 		}
 		//	And try to extract AutoReconnect value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  autoReconnect;
-
-		//	Try to initialize no_delay from class property
-		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-		if (cl_prop.is_empty()==false)	cl_prop  >>  no_delay;
-		else {
-			//	Try to initialize no_delay from default device value
-			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-			if (def_prop.is_empty()==false)	def_prop  >>  no_delay;
-		}
-		//	And try to extract no_delay value from database
-		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  no_delay;
 
 	}
 
@@ -578,7 +572,7 @@ void SocketDS::check_connection()
 	DEBUG_STREAM << "SocketDS::CheckConnection()  - " << device_name << endl;
 	/*----- PROTECTED REGION ID(SocketDS::check_connection) ENABLED START -----*/
 	
-	reconnect();
+    reconnect();
 	
 	/*----- PROTECTED REGION END -----*/	//	SocketDS::check_connection
 }
